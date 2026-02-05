@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: authentik
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: postgres:15
+            command:
+            - /bin/sh
+            - -c
+            - |
+              pg_dump authentik > /backup/db.sql
+              aws s3 cp /backup/db.sql s3://authentik-backups/
+          restartPolicy: OnFailure
