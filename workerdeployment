@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authentik-worker
+  namespace: authentik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authentik-worker
+  template:
+    metadata:
+      labels:
+        app: authentik-worker
+    spec:
+      containers:
+      - name: worker
+        image: ghcr.io/goauthentik/server:latest
+        args: ["worker"]
